@@ -15,12 +15,23 @@ using namespace std;
 
 void InputGridData(Grid<char> &col)
 {
-    string filename;
-    cout << "Grid input file name? ";
-    cin >> filename;
-
     ifstream infile;
-    infile.open(filename);
+    while (true)
+    {
+        string filename;
+        cout << "Grid input file name? ";
+        cin >> filename;
+        infile.open(filename);
+
+        if (infile.is_open())
+            break;
+        else
+        {
+            infile.clear();
+            cout << "Unable to open that file. Try again." << endl;
+        }
+    }
+
     int h, w;
     infile >> h >> w;
 
@@ -133,9 +144,71 @@ int main()
     else
         wrap = false;
 
+    while (cin.get() != '\n')
+        continue;
+
     ShowGrid(colony);
     GenerNext(colony, wrap);
     ShowGrid(colony);
+
+    cout << "a)nimate, t)ick, q)uit? ";
+    while (cin.get(ch))
+    {
+        while (cin.get() != '\n')
+            continue;
+
+        bool over = false;
+        switch(ch)
+        {
+            case 'a':
+            case 'A':
+                {
+                    string frames;
+                    while (true)
+                    {
+                        cout << "How many frames? ";
+                        cin >> frames;
+
+                        while (cin.get() != '\n')
+                            continue;
+
+                        bool all_num = true;
+                        if (frames.length() == 0)
+                            all_num = false;
+                        for (char f : frames)
+                        {
+                            if (!isdigit(f))
+                                all_num = false;
+                        }
+                        if (all_num)
+                        {
+                            int iters = stringToInteger(frames);
+                            for (int i = 0; i < iters; i++)
+                            {
+                                GenerNext(colony, wrap);
+                                ShowGrid(colony);
+                                pause(50);
+                                clearConsole();
+                            }
+                            break;
+                        }
+                    }
+                    break;
+                }
+            case 't':
+            case 'T':
+                GenerNext(colony, wrap);
+                ShowGrid(colony);
+                break;
+            case 'q':
+            case 'Q':
+                over = true;
+                break;
+        }
+        if (over)
+            break;
+        cout << "a)nimate, t)ick, q)uit? ";
+    }
 
     return 0;
 }
