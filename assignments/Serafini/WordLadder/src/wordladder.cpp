@@ -13,6 +13,7 @@
 #include "stack.h"
 #include "queue.h"
 #include "lexicon.h"
+#include "filelib.h"
 
 using namespace std;
 
@@ -29,22 +30,45 @@ int main()
     Lexicon dict;
     LoadDict(dict);
 
-    // 有什么避免两次复制粘贴的代码重用好办法？
-    string word_start, word_end;
-    InputWord(1, word_start);
-    if (word_start.length() == 0)
+    while (true)
     {
-        cout << "Have a nice day.";
-        return 0;
-    }
-    InputWord(2, word_end);
-    if (word_end.length() == 0)
-    {
-        cout << "Have a nice day.";
-        return 0;
-    }
+        string word_start, word_end;
 
-    FindLadder(dict, word_start, word_end);
+        while (true)
+        {
+            InputWord(1, word_start);
+            if (word_start.length() == 0)
+            {
+                cout << "Have a nice day.";
+                return 0;
+            }
+            InputWord(2, word_end);
+            if (word_end.length() == 0)
+            {
+                cout << "Have a nice day.";
+                return 0;
+            }
+
+            if (word_start.length() == word_end.length())
+            {
+                if (word_start == word_end)
+                {
+                    cout << "The two words must be different." << endl << endl;
+                    continue;
+                }
+                if (!dict.contains(word_start) || !dict.contains(word_end))
+                {
+                    cout << "The two words must be found in the dictionary." << endl << endl;
+                    continue;
+                }
+                break;
+            }
+            else
+                cout << "The two words must be the same length." << endl << endl;
+        }
+
+        FindLadder(dict, word_start, word_end);
+    }
 
     return 0;
 }
@@ -65,6 +89,13 @@ void LoadDict(Lexicon& dict)
     string filename;
     getline(cin, filename);
 
+    while (!fileExists(filename))
+    {
+        cout << "Unable to open that file. Try again." << endl;
+        cout << "Dictionary file name? ";
+        getline(cin, filename);
+    }
+
     infile.open(filename);
     string word;
     while(getline(infile, word))
@@ -79,7 +110,7 @@ void InputWord(int n, string& word)
 {
     cout << "Word #" << to_string(n) << " (or Enter to quit): ";
     getline(cin, word);
-    transform(word.begin(), word.end(), word.begin(), ::tolower);   //?1
+    transform(word.begin(), word.end(), word.begin(), ::tolower);
 }
 
 void FindLadder(Lexicon& dict, string& word1, string& word2)
@@ -119,6 +150,7 @@ void FindLadder(Lexicon& dict, string& word1, string& word2)
 
                     if (word == word2)
                     {
+                        cout << "A ladder from " << word2 << " back to " << word1 << ":" << endl;
                         PrintWordsFound(new_ladder);
                         return;
                     }          
@@ -127,6 +159,8 @@ void FindLadder(Lexicon& dict, string& word1, string& word2)
             word[i] = old_letter;
         }
     }
+
+    cout << "No word ladder found from azure back to metal." << endl << endl;
 }
 
 void PrintWordsFound(Stack<string>& words)
@@ -135,5 +169,5 @@ void PrintWordsFound(Stack<string>& words)
     {
         cout << words.pop() << " ";
     }
-    cout << endl;
+    cout << endl << endl;
 }
