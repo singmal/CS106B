@@ -79,7 +79,7 @@ void InputWord(int n, string& word)
 {
     cout << "Word #" << to_string(n) << " (or Enter to quit): ";
     getline(cin, word);
-    transform(word.begin(), word.end(), word.begin(), tolower);
+    transform(word.begin(), word.end(), word.begin(), ::tolower);   //?1
 }
 
 void FindLadder(Lexicon& dict, string& word1, string& word2)
@@ -100,25 +100,28 @@ void FindLadder(Lexicon& dict, string& word1, string& word2)
     {
         Stack<string> ladder = frontier.dequeue();
         string word = ladder.peek();
+
         for (int i = 0; i < word.length(); i++)
         {
             char old_letter = word[i];
-            for (int j = 0; j < 24; j++)
+            for (int j = 0; j < 26; j++)
             {
                 char new_letter = 'a' + j;
                 word[i] = new_letter;
 
-                if (dict.contains(new_letter) && old_letter != new_letter && !explored_set.contains(word))
+                if (dict.contains(word) && old_letter != new_letter && !explored_set.contains(word))
                 {
-                    ladder.push(word);
-                    frontier.enqueue(ladder);
+                    // 易错！这里如果不新建一个ladder的话，那么如果存在下一个i, j满足条件，那么相当于对一个ladder一次性加多个单词（而且这多个单词还是在同一个单词基础上改的）！
+                    Stack<string> new_ladder = ladder;
+                    new_ladder.push(word);
+                    frontier.enqueue(new_ladder);
                     explored_set.add(word);
 
                     if (word == word2)
                     {
-                        PrintWordsFound(ladder);
+                        PrintWordsFound(new_ladder);
                         return;
-                    }
+                    }          
                 }
             }
             word[i] = old_letter;
