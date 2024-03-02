@@ -35,18 +35,38 @@ int main()
     Map<Vector<string>, Vector<string> > map;
     ConstructMap(inFile, map, N);
 
-    Vector<Vector<string> > Keys = map.keys();
-    int map_key_length = Keys.size();
-    int index = randomInteger(1, map_key_length) - 1;
-    Vector<string> window = map[Keys[index]];
-
-    cout << endl;
-    int num;
-    while(!PromptForWordsToGener(num, N));
-    if (num == 0)
+    while (true)
     {
-        cout << "Exiting.";
-        return 0;
+        cout << endl;
+        int num;
+        while(!PromptForWordsToGener(num, N));
+        if (num == 0)
+        {
+            cout << "Exiting.";
+            return 0;
+        }
+
+        Vector<Vector<string> > Keys = map.keys();
+        int map_key_length = Keys.size();
+        int index = randomInteger(1, map_key_length) - 1;
+        Vector<string> window = Keys[index];
+
+        cout << "... ";
+        for (string word : window)
+        {
+            cout << word << " ";
+        }
+        for (int i = 0; i < num; i++)
+        {
+            Vector<string> candidate = map[window];
+            int length = candidate.size();
+            int idx = randomInteger(1, length) - 1;
+            string next_word = candidate[idx];
+            cout << next_word << " ";
+            window.remove(0);
+            window.push_back(next_word);
+        }
+        cout << "..." << endl;
     }
 
     return 0;
