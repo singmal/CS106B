@@ -47,6 +47,8 @@ void drawSierpinskiTriangle(GWindow& gw, double x, double y, double size, int or
     }
 }
 
+void drawTreeHelper(GWindow& gw, double x, double y, double size, int order, int theta);
+
 /**
  * Draws a recursive tree fractal image of the specified size and order,
  * placing the bounding box's top-left corner at position (x,y).
@@ -61,6 +63,13 @@ void drawSierpinskiTriangle(GWindow& gw, double x, double y, double size, int or
  */
 void drawTree(GWindow& gw, double x, double y, double size, int order)
 {
+    drawTreeHelper(gw, x + size / 2, y + size, size, order, 90);
+}
+
+const double pi = 3.1415926;
+
+void drawTreeHelper(GWindow& gw, double x, double y, double size, int order, int theta)
+{
     gw.setColor("#8b7765");
     if (order == 0)
         return;
@@ -68,11 +77,14 @@ void drawTree(GWindow& gw, double x, double y, double size, int order)
     {
         gw.setColor("#2e8b57");
     }
-    gw.drawPolarLine(x + size / 2, y + size, size / 2, 90);
+    gw.drawPolarLine(x, y, size / 2, theta);
     for (int i = 0; i < 7; i++)
     {
-        int x = 45 + 15 * i;
-        drawTree(gw, x + size / 2 * (1 - sin(x) + cos(x)), y + size /2 * (1 - cos(x) - sin(x)), size / 2, order - 1);
+        int alpha = (i - 3) * 15;
+        int beta = theta + alpha;
+        drawTreeHelper(gw, x + size / 2 * cos(theta / 180 * pi),
+                           y - size / 2 * sin(theta / 180 * pi),
+                           size / 2, order - 1, beta);
     }
 }
 
