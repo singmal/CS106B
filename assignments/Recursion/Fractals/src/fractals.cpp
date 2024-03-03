@@ -27,8 +27,24 @@ const int BRANCH_COLOR = 0x8b7765; /* Color of all branches of recursive tree (l
  * @param size - The length of one side of the triangle.
  * @param order - The order of the fractal.
  */
-void drawSierpinskiTriangle(GWindow& gw, double x, double y, double size, int order) {
-    // TODO: write this function
+void drawSierpinskiTriangle(GWindow& gw, double x, double y, double size, int order)
+{
+    if (order == 0)
+        return;
+    else if (x < 0 || y < 0 || size < 0 || order < 0)
+        throw "Illegal input, exiting ...";
+    else if (order == 1)
+    {
+        gw.drawLine(x, y, x + size, y);
+        gw.drawLine(x + size, y, x + size/2, y + size * sqrt(3) / 2);
+        gw.drawLine(x + size / 2, y + size * sqrt(3) / 2, x, y);
+    }
+    else
+    {
+        drawSierpinskiTriangle(gw, x, y, size / 2, order - 1);
+        drawSierpinskiTriangle(gw, x + size / 2, y, size / 2, order - 1);
+        drawSierpinskiTriangle(gw, x + size / 4, y + size * sqrt(3) / 4, size / 2, order - 1);
+    }
 }
 
 /**
@@ -43,8 +59,21 @@ void drawSierpinskiTriangle(GWindow& gw, double x, double y, double size, int or
  * @param size - The length of one side of the bounding box.
  * @param order - The order of the fractal.
  */
-void drawTree(GWindow& gw, double x, double y, double size, int order) {
-    // TODO: write this function
+void drawTree(GWindow& gw, double x, double y, double size, int order)
+{
+    gw.setColor("#8b7765");
+    if (order == 0)
+        return;
+    else if (order == 1)
+    {
+        gw.setColor("#2e8b57");
+    }
+    gw.drawPolarLine(x + size / 2, y + size, size / 2, 90);
+    for (int i = 0; i < 7; i++)
+    {
+        int x = 45 + 15 * i;
+        drawTree(gw, x + size / 2 * (1 - sin(x) + cos(x)), y + size /2 * (1 - cos(x) - sin(x)), size / 2, order - 1);
+    }
 }
 
 /**
