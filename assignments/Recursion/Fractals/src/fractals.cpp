@@ -82,8 +82,9 @@ void drawTreeHelper(GWindow& gw, double x, double y, double size, int order, int
     {
         int alpha = (i - 3) * 15;
         int beta = theta + alpha;
-        drawTreeHelper(gw, x + size / 2 * cos(theta / 180 * pi),
-                           y - size / 2 * sin(theta / 180 * pi),
+        // 参数一行写不下的格式？
+        drawTreeHelper(gw, x + size / 2 * cos(double(theta) / 180 * pi),
+                           y - size / 2 * sin(double(theta) / 180 * pi),
                            size / 2, order - 1, beta);
     }
 }
