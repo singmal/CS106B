@@ -82,7 +82,6 @@ void drawTreeHelper(GWindow& gw, double x, double y, double size, int order, int
     {
         int alpha = (i - 3) * 15;
         int beta = theta + alpha;
-        // 参数一行写不下的格式？
         drawTreeHelper(gw, x + size / 2 * cos(double(theta) / 180 * pi),
                            y - size / 2 * sin(double(theta) / 180 * pi),
                            size / 2, order - 1, beta);
@@ -104,7 +103,8 @@ void drawTreeHelper(GWindow& gw, double x, double y, double size, int order, int
  * @param color - The color of the fractal; zero if palette is to be used
  */
 void mandelbrotSet(GWindow& gw, double minX, double incX,
-                   double minY, double incY, int maxIterations, int color) {
+                   double minY, double incY, int maxIterations, int color)
+{
 
     // Creates palette of colors
     // To use palette:
@@ -113,11 +113,25 @@ void mandelbrotSet(GWindow& gw, double minX, double incX,
 
     int width = gw.getCanvasWidth();
     int height = gw.getCanvasHeight();
-    GBufferedImage image(width,height,0xffffff);
+    GBufferedImage image(width, height, 0xffffff);
     gw.add(&image);
     Grid<int> pixels = image.toGrid(); // Convert image to grid
 
-    // TODO: Put your Mandelbrot Set code here
+    for (int x = 0; x < pixels.numCols(); x++)
+    {
+        for (int y = 0; y < pixels.numRows(); y++)
+        {
+            Complex c = Complex(minX + x * incX, minY + y * incY);
+            int iters = mandelbrotSetIterations(c, maxIterations);
+            if (color)
+            {
+                if (iters == maxIterations)
+                    pixels[y][x] = color;
+            }
+            else
+                pixels[y][x] = palette[iters % palette.size()];
+        }
+    }
 
     image.fromGrid(pixels); // Converts and puts the grid back into the image
 }
@@ -132,9 +146,9 @@ void mandelbrotSet(GWindow& gw, double minX, double incX,
  * @param maxIterations - The maximum number of iterations to run recursive step
  * @return number of iterations needed to determine if c is unbounded
  */
-int mandelbrotSetIterations(Complex c, int maxIterations) {
-    // TODO: Write this function
-    return 0; // Only here to make this compile
+int mandelbrotSetIterations(Complex c, int maxIterations)
+{
+    return mandelbrotSetIterations(Complex(0, 0), c, maxIterations);
 }
 /**
  * An iteration of the Mandelbrot Set recursive formula with given values z and c, to
@@ -148,12 +162,19 @@ int mandelbrotSetIterations(Complex c, int maxIterations) {
  * @return number of iterations needed to determine if c is unbounded
  */
 int mandelbrotSetIterations(Complex z, Complex c, int remainingIterations) {
-    // TODO: write this function
-    return 0; // Only here to make this compile
+
+    if (z.abs() > 4 || remainingIterations == 0)
+        return 0;
+    else
+    {
+        z = z * z + c;
+        return 1 + mandelbrotSetIterations(z, c, remainingIterations - 1);
+    }
 }
 
 // Helper function to set the palette
-Vector<int> setPalette() {
+Vector<int> setPalette()
+{
     Vector<int> colors;
 
     // Feel free to replace with any palette.
@@ -171,7 +192,8 @@ Vector<int> setPalette() {
     // http://www.colourlovers.com/palette/524048/Hope
     string colorSt =  "#04182B,#5A8C8C,#F2D99D,#738585,#AB1111,#04182B,#5A8C8C,#F2D99D";
     Vector<string>colorsStrVec = stringSplit(colorSt,",");
-    for (string color : colorsStrVec) {
+    for (string color : colorsStrVec)
+    {
         colors.add(convertColorToRGB(trim(color)));
     }
     return colors;
