@@ -17,7 +17,7 @@ struct domino
     }
 };
 
-bool chainExists(set<domino>& domes, int id1, int id2);
+bool chainExists(const set<domino>& domes, int id1, int id2);
 
 int main()
 {
@@ -36,7 +36,7 @@ int main()
 
 }
 
-bool chainExists(set<domino>& domes, int id1, int id2)
+bool chainExists(const set<domino>& domes, int id1, int id2)
 {
     if (id1 == id2)
         return true;
@@ -45,13 +45,13 @@ bool chainExists(set<domino>& domes, int id1, int id2)
         for (auto iter = domes.begin(); iter != domes.end(); iter++)
         {
             domino cur = *iter;
-            domes.erase(cur);
-            if ((cur.first == id1 && chainExists(domes, cur.second, id2)) || 
-                (cur.second == id1 && chainExists(domes, cur.first, id2)))
+            set<domino> cur_domes = domes;
+            cur_domes.erase(cur);
+            if ((cur.first == id1 && chainExists(cur_domes, cur.second, id2)) || 
+                (cur.second == id1 && chainExists(cur_domes, cur.first, id2)))
             {
                 return true;
             }
-            domes.insert(cur);
         }
         return false;
     }
