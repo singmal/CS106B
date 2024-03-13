@@ -91,9 +91,6 @@ SOURCES += $$PWD/lib/StanfordCPPLib/util/*.cpp
 exists($$PWD/src/*.cpp) {
     SOURCES += $$PWD/src/*.cpp
 }
-exists($$PWD/src/test/*.cpp) {
-    SOURCES += $$PWD/src/test/*.cpp
-}
 exists($$PWD/*.cpp) {
     SOURCES += $$PWD/*.cpp
 }
@@ -107,9 +104,6 @@ HEADERS += $$PWD/lib/StanfordCPPLib/io/*.h
 HEADERS += $$PWD/lib/StanfordCPPLib/private/*.h
 HEADERS += $$PWD/lib/StanfordCPPLib/system/*.h
 HEADERS += $$PWD/lib/StanfordCPPLib/util/*.h
-exists($$PWD/src/test/*.h) {
-    HEADERS += $$PWD/src/test/*.h
-}
 exists($$PWD/src/*.h) {
     HEADERS += $$PWD/src/*.h
 }
@@ -128,9 +122,6 @@ INCLUDEPATH += $$PWD/src/
 INCLUDEPATH += $$PWD/
 exists($$PWD/src/autograder/*.h) {
     INCLUDEPATH += $$PWD/src/autograder/
-}
-exists($$PWD/src/test/*.h) {
-    INCLUDEPATH += $$PWD/src/test/
 }
 
 # directories listed as "Other files" in left Project pane of Qt Creator

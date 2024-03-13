@@ -25,22 +25,26 @@
 #include "strlib.h"
 #include "grammarsolver.h"
 
-int main() {
+int main()
+{
     std::cout << "Welcome to CS 106B Grammar Solver!" << std::endl;
     std::cout << "I will use grammar rules to generate random" << std::endl;
     std::cout << "sentences, phrases, and expressions for you." << std::endl;
 
     // prompt for input files repeatedly
     bool play = true;
-    while (play) {
+    while (play)
+    {
         std::cout << std::endl;
         std::ifstream input;
         promptUserForFile(input, "Grammar file name? ");
 
         // prompt for symbols repeatedly
-        while (true) {
+        while (true)
+        {
             std::string symbol = trim(getLine("Symbol to generate (Enter to quit)? "));
-            if (symbol.empty()) {
+            if (symbol.empty())
+            {
                 break;
             }
 
@@ -52,7 +56,8 @@ int main() {
             Vector<std::string> result = grammarGenerate(input, symbol, times);
 
             // print the vector of results
-            for (int i = 0; i < result.size(); i++) {
+            for (int i = 0; i < result.size(); i++)
+            {
                 std::cout << std::setw(2) << (i+1) << ": " << result[i] << std::endl;
             }
             std::cout << std::endl;
