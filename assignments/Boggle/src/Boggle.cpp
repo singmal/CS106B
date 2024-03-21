@@ -19,10 +19,9 @@ static string BIG_BOGGLE_CUBES[25] = {
    "FIPRSY", "GORRVW", "HIPRRY", "NOOTUW", "OOOTTU"
 };
 
-Boggle::Boggle(Lexicon& dictionary, string boardText)
+Boggle::Boggle(Lexicon& dictionary, string boardText) : dict(dictionary)
 {
     board.resize(4, 4);
-    dict = dictionary;
     if (boardText.empty())
     {
         for (int i = 0; i < 4; i++)
@@ -51,7 +50,7 @@ char Boggle::getLetter(int row, int col)
 {
     if (row < 0 || row > 4 || col < 0 || col > 4)
         throw 100;
-    return board[i][j];
+    return board[row][col];
 }
 
 bool Boggle::checkWord(string word) {
