@@ -17,8 +17,9 @@ static string BIG_BOGGLE_CUBES[25] = {
    "FIPRSY", "GORRVW", "HIPRRY", "NOOTUW", "OOOTTU"
 };
 
-Boggle::Boggle(Lexicon& dictionary, string boardText) {
-    // TODO: implement
+Boggle::Boggle(Lexicon& dictionary, string boardText)
+{
+
 
 }
 
