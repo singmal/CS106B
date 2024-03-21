@@ -1,4 +1,6 @@
 #include "Boggle.h"
+#include "shuffle.h"
+#include <cctype>
 
 // letters on all 6 sides of every cube
 static string CUBES[16] = {
@@ -19,13 +21,37 @@ static string BIG_BOGGLE_CUBES[25] = {
 
 Boggle::Boggle(Lexicon& dictionary, string boardText)
 {
-
-
+    board.resize(4, 4);
+    dict = dictionary;
+    if (boardText.empty())
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                boardText = shuffle(CUBES[4 * i + j]);
+                board[i][j] = boardText[0];
+            }
+        }
+    }
+    else
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                char ch = boardText[4 * i + j];
+                board[i][j] = toupper(ch);
+            }
+        }
+    }
 }
 
-char Boggle::getLetter(int row, int col) {
-    // TODO: implement
-    return '?';   // remove this
+char Boggle::getLetter(int row, int col)
+{
+    if (row < 0 || row > 4 || col < 0 || col > 4)
+        throw 100;
+    return board[i][j];
 }
 
 bool Boggle::checkWord(string word) {

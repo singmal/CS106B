@@ -32,7 +32,8 @@ static const string DICTIONARY_FILE = "dictionary.txt";
 // function prototype declarations
 void playOneGame(Lexicon& dictionary);   // written by you, in boggleplay.cpp
 
-int main() {
+int main()
+{
     cout << "Welcome to CS 106B Boggle!" << endl;
     cout << "This game is a search for words on a 2-D board of letter cubes." << endl;
     cout << "The good news is that you might improve your vocabulary a bit." << endl;
@@ -44,10 +45,12 @@ int main() {
     getLine("Press Enter to begin the game ... ");
 
     // play games repeatedly until user decides to quit
-    while (true) {
+    while (true)
+    {
         playOneGame(dictionary);   // your function
         cout << endl;
-        if (!getYesOrNo("Play again (Y/N)? ")) {
+        if (!getYesOrNo("Play again (Y/N)? "))
+        {
             break;
         }
     }
