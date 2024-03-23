@@ -5,6 +5,7 @@
 #include <string>
 #include "lexicon.h"
 #include "grid.h"
+#include "set.h"
 using namespace std;
 
 class Boggle
@@ -17,12 +18,15 @@ class Boggle
         Set<string> computerWordSearch();
         int getScoreHuman();
         int getScoreComputer();
+        Set<string> getWordsFound();
 
         friend ostream& operator<<(ostream& out, Boggle& boggle);
 
     private:
         Grid<char> board;
         Lexicon& dict;
+        Set<string> wordsFound;
+        int humanScore;
 };
 
 #endif // _boggle_h

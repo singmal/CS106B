@@ -22,6 +22,8 @@ static string BIG_BOGGLE_CUBES[25] = {
 Boggle::Boggle(Lexicon& dictionary, string boardText) : dict(dictionary)
 {
     board.resize(4, 4);
+    wordsFound = {};
+    humanScore = 0;
     if (boardText.empty())
     {
         for (int i = 0; i < 4; i++)
@@ -53,9 +55,23 @@ char Boggle::getLetter(int row, int col)
     return board[row][col];
 }
 
-bool Boggle::checkWord(string word) {
-    // TODO: implement
-    return false;   // remove this
+bool Boggle::checkWord(string word)
+{
+    int size = word.size();
+    for (int i = 0; i < size; i++)
+    {
+        word[i] = tolower(word[i]);
+    }
+    if (size < 4 || wordsFound.contains(word) || !dict.contains(word))
+    {
+        return false;
+    }
+    else
+    {
+        wordsFound.add(word);
+        humanScore += (size - 3);
+        return true;
+    }
 }
 
 bool Boggle::humanWordSearch(string word) {
@@ -63,9 +79,9 @@ bool Boggle::humanWordSearch(string word) {
     return false;   // remove this
 }
 
-int Boggle::getScoreHuman() {
-    // TODO: implement
-    return 0;   // remove this
+int Boggle::getScoreHuman()
+{
+    return humanScore;
 }
 
 Set<string> Boggle::computerWordSearch() {
@@ -79,7 +95,20 @@ int Boggle::getScoreComputer() {
     return 0;   // remove this
 }
 
-ostream& operator<<(ostream& out, Boggle& boggle) {
-    // TODO: implement
+Set<string> Boggle::getWordsFound()
+{
+    return wordsFound;
+}
+
+ostream& operator<<(ostream& out, Boggle& boggle)
+{
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            cout << boggle.getLetter(i, j);
+        }
+        cout << endl;
+    }
     return out;
 }
