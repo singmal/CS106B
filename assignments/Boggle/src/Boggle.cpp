@@ -26,22 +26,22 @@ Boggle::Boggle(Lexicon& dictionary, string boardText) : dict(dictionary)
     humanScore = 0;
     if (boardText.empty())
     {
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < board.numRows(); i++)
         {
-            for (int j = 0; j < 4; j++)
+            for (int j = 0; j < board.numCols(); j++)
             {
-                boardText = shuffle(CUBES[4 * i + j]);
+                boardText = shuffle(CUBES[board.numCols() * i + j]);
                 board[i][j] = boardText[0];
             }
         }
     }
     else
     {
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < board.numRows(); i++)
         {
-            for (int j = 0; j < 4; j++)
+            for (int j = 0; j < board.numCols(); j++)
             {
-                char ch = boardText[4 * i + j];
+                char ch = boardText[board.numCols() * i + j];
                 board[i][j] = toupper(ch);
             }
         }
@@ -50,7 +50,7 @@ Boggle::Boggle(Lexicon& dictionary, string boardText) : dict(dictionary)
 
 char Boggle::getLetter(int row, int col)
 {
-    if (row < 0 || row > 4 || col < 0 || col > 4)
+    if (!board.inBounds(row, col))
         throw 100;
     return board[row][col];
 }
@@ -68,15 +68,50 @@ bool Boggle::checkWord(string word)
     }
     else
     {
-        wordsFound.add(word);
-        humanScore += (size - 3);
         return true;
     }
 }
 
-bool Boggle::humanWordSearch(string word) {
-    // TODO: implement
-    return false;   // remove this
+bool Boggle::humanWordSearch(string word)
+{
+    for (int i = 0; i < board.numRows(); i++)
+    {
+        for (int j = 0; j < board.numCols(); j++)
+        {
+            Grid<char> mark(board.numRows(), board.numCols());
+            mark.fill('o');
+            if (humanWordSearchHelper(word, i, j, 0, mark))
+                return true;
+        }
+    }
+    return false;
+}
+
+bool Boggle::humanWordSearchHelper(string word, int i, int j, int idx, Grid<char> mark)
+{
+    int size = word.size();
+    if (idx == size)
+    {
+        wordsFound.add(word);
+        humanScore += (size - 3);
+        return true;
+    }
+    string substr = word.substr(0, idx + 1);
+    if (board.inBounds(i, j) && word[idx] == board[i][j] && !mark[i][j]!='x' && dict.containsPrefix(substr))
+    {
+        mark[i][j] = 'x';
+        return humanWordSearchHelper(word, i - 1, j - 1, idx + 1, mark) ||
+                    humanWordSearchHelper(word, i - 1, j, idx + 1, mark) ||
+                    humanWordSearchHelper(word, i - 1, j + 1, idx + 1, mark) ||
+                    humanWordSearchHelper(word, i, j - 1, idx + 1, mark) ||
+                    humanWordSearchHelper(word, i, j + 1, idx + 1, mark) ||
+                    humanWordSearchHelper(word, i + 1, j - 1, idx + 1, mark)||
+                    humanWordSearchHelper(word, i + 1, j, idx + 1, mark)||
+                    humanWordSearchHelper(word, i + 1, j + 1, idx + 1, mark);
+    }
+    else
+        return false;
+
 }
 
 int Boggle::getScoreHuman()
@@ -102,13 +137,13 @@ Set<string> Boggle::getWordsFound()
 
 ostream& operator<<(ostream& out, Boggle& boggle)
 {
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < boggle.board.numRows(); i++)
     {
-        for (int j = 0; j < 4; j++)
+        for (int j = 0; j < boggle.board.numCols(); j++)
         {
-            cout << boggle.getLetter(i, j);
+            out << boggle.getLetter(i, j);
         }
-        cout << endl;
+        out << endl;
     }
     return out;
 }

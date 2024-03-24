@@ -49,7 +49,7 @@ void playOneGame(Lexicon& dictionary)
         boardPtr = new Boggle(dictionary, textOnBoard);
     }
 
-    // Task 2: human's turn except for search
+    // Task 2 & 3: human's turn except for search
     cout << "It's your turn!" << endl;
     string input;
     Set<string> words;
@@ -63,7 +63,9 @@ void playOneGame(Lexicon& dictionary)
         cout << "Your score: " << boardPtr->getScoreHuman() << endl;
         cout << "Type a word (or Enter to stop): ";
         getline(cin, input);
-        if (!boardPtr->checkWord(input))
+        if (input.empty())
+            break;
+        else if (!boardPtr->checkWord(input))
             cout << "You must enter an unfound 4+ letter word from dicitonary." << endl;
         else
         {
@@ -71,7 +73,10 @@ void playOneGame(Lexicon& dictionary)
             {
                 *it = toupper(*it);
             }
-            cout << "You found a new word! \"" << input << "\"" << endl;
+            if (boardPtr->humanWordSearch(input))
+                cout << "You found a new word! \"" << input << "\"" << endl;
+            else
+                cout << "That word can't be formed on this board." << endl;
         }
     }
 }

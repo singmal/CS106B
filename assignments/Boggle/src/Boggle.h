@@ -27,6 +27,8 @@ class Boggle
         Lexicon& dict;
         Set<string> wordsFound;
         int humanScore;
+
+        bool humanWordSearchHelper(string word, int i, int j, int idx, Grid<char> mark);
 };
 
 #endif // _boggle_h
