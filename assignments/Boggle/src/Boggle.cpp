@@ -22,8 +22,10 @@ static string BIG_BOGGLE_CUBES[25] = {
 Boggle::Boggle(Lexicon& dictionary, string boardText) : dict(dictionary)
 {
     board.resize(4, 4);
-    wordsFound = {};
+    humanWordsFound = {};
     humanScore = 0;
+    computerWordsFound = {};
+    computerScore = 0;
     if (boardText.empty())
     {
         for (int i = 0; i < board.numRows(); i++)
@@ -58,11 +60,12 @@ char Boggle::getLetter(int row, int col)
 bool Boggle::checkWord(string word)
 {
     int size = word.size();
+    string word_low = word;
     for (int i = 0; i < size; i++)
     {
-        word[i] = tolower(word[i]);
+        word_low[i] = tolower(word[i]);
     }
-    if (size < 4 || wordsFound.contains(word) || !dict.contains(word))
+    if (size < 4 || humanWordsFound.contains(word) || !dict.contains(word_low))
     {
         return false;
     }
@@ -87,12 +90,12 @@ bool Boggle::humanWordSearch(string word)
     return false;
 }
 
-bool Boggle::humanWordSearchHelper(string word, int i, int j, int idx, Grid<char> mark)
+bool Boggle::humanWordSearchHelper(string word, int i, int j, int idx, Grid<char>& mark)
 {
     int size = word.size();
     if (idx == size)
     {
-        wordsFound.add(word);
+        humanWordsFound.add(word);
         humanScore += (size - 3);
         return true;
     }
@@ -100,14 +103,16 @@ bool Boggle::humanWordSearchHelper(string word, int i, int j, int idx, Grid<char
     if (board.inBounds(i, j) && word[idx] == board[i][j] && !mark[i][j]!='x' && dict.containsPrefix(substr))
     {
         mark[i][j] = 'x';
-        return humanWordSearchHelper(word, i - 1, j - 1, idx + 1, mark) ||
-                    humanWordSearchHelper(word, i - 1, j, idx + 1, mark) ||
-                    humanWordSearchHelper(word, i - 1, j + 1, idx + 1, mark) ||
-                    humanWordSearchHelper(word, i, j - 1, idx + 1, mark) ||
-                    humanWordSearchHelper(word, i, j + 1, idx + 1, mark) ||
-                    humanWordSearchHelper(word, i + 1, j - 1, idx + 1, mark)||
-                    humanWordSearchHelper(word, i + 1, j, idx + 1, mark)||
-                    humanWordSearchHelper(word, i + 1, j + 1, idx + 1, mark);
+        bool result = humanWordSearchHelper(word, i - 1, j - 1, idx + 1, mark) ||
+                        humanWordSearchHelper(word, i - 1, j, idx + 1, mark) ||
+                        humanWordSearchHelper(word, i - 1, j + 1, idx + 1, mark) ||
+                        humanWordSearchHelper(word, i, j - 1, idx + 1, mark) ||
+                        humanWordSearchHelper(word, i, j + 1, idx + 1, mark) ||
+                        humanWordSearchHelper(word, i + 1, j - 1, idx + 1, mark)||
+                        humanWordSearchHelper(word, i + 1, j, idx + 1, mark)||
+                        humanWordSearchHelper(word, i + 1, j + 1, idx + 1, mark);
+        mark[i][j] = 'o';
+        return result;
     }
     else
         return false;
@@ -119,10 +124,24 @@ int Boggle::getScoreHuman()
     return humanScore;
 }
 
-Set<string> Boggle::computerWordSearch() {
-    // TODO: implement
-    Set<string> result;   // remove this
-    return result;        // remove this
+Set<string> Boggle::computerWordSearch()
+{
+    for (int i = 0; i < board.numRows(); i++)
+    {
+        for (int j = 0; j < board.numCols(); j++)
+        {
+            Grid<char> mark(board.numRows(), board.numCols());
+            mark.fill('o');
+            string search = "";
+            computerWordSearchHelper(search, i, j, 0, mark);
+        }
+    }
+    return result;
+}
+
+void Boggle::computerWordSearchHelper(string word, int i, int j, int level, Grid<char>& mark)
+{
+    if ()
 }
 
 int Boggle::getScoreComputer() {
@@ -130,9 +149,9 @@ int Boggle::getScoreComputer() {
     return 0;   // remove this
 }
 
-Set<string> Boggle::getWordsFound()
+Set<string> Boggle::getHumanWordsFound()
 {
-    return wordsFound;
+    return humanWordsFound;
 }
 
 ostream& operator<<(ostream& out, Boggle& boggle)

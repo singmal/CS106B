@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cctype>
 #include "Boggle.h"
+#include "console.h"
 
 void playOneGame(Lexicon& dictionary)
 {
@@ -58,21 +59,22 @@ void playOneGame(Lexicon& dictionary)
         cout << (*boardPtr);
         cout << endl;
 
-        words = boardPtr->getWordsFound();
+        words = boardPtr->getHumanWordsFound();
         cout << "Your words (" << words.size() << "): " << words << endl;
         cout << "Your score: " << boardPtr->getScoreHuman() << endl;
         cout << "Type a word (or Enter to stop): ";
         getline(cin, input);
+        for (auto it = input.begin(); it != input.end(); it++)
+        {
+            *it = toupper(*it);
+        }
+        clearConsole();
         if (input.empty())
             break;
         else if (!boardPtr->checkWord(input))
             cout << "You must enter an unfound 4+ letter word from dicitonary." << endl;
         else
         {
-            for (auto it = input.begin(); it != input.end(); it++)
-            {
-                *it = toupper(*it);
-            }
             if (boardPtr->humanWordSearch(input))
                 cout << "You found a new word! \"" << input << "\"" << endl;
             else
