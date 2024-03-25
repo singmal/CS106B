@@ -65,7 +65,7 @@ bool Boggle::checkWord(string word)
     {
         word_low[i] = tolower(word[i]);
     }
-    if (size < 4 || humanWordsFound.contains(word) || !dict.contains(word_low))
+    if (size < 4 || humanWordsFound.contains(word) || computerWordsFound.contains(word) || !dict.contains(word_low))
     {
         return false;
     }
@@ -100,7 +100,7 @@ bool Boggle::humanWordSearchHelper(string word, int i, int j, int idx, Grid<char
         return true;
     }
     string substr = word.substr(0, idx + 1);
-    if (board.inBounds(i, j) && word[idx] == board[i][j] && !mark[i][j]!='x' && dict.containsPrefix(substr))
+    if (board.inBounds(i, j) && word[idx] == board[i][j] && mark[i][j]!='x' && dict.containsPrefix(substr))
     {
         mark[i][j] = 'x';
         bool result = humanWordSearchHelper(word, i - 1, j - 1, idx + 1, mark) ||
@@ -133,25 +133,50 @@ Set<string> Boggle::computerWordSearch()
             Grid<char> mark(board.numRows(), board.numCols());
             mark.fill('o');
             string search = "";
-            computerWordSearchHelper(search, i, j, 0, mark);
+            computerWordSearchHelper(search, i, j, mark);
         }
     }
-    return result;
+    return computerWordsFound;
 }
 
-void Boggle::computerWordSearchHelper(string word, int i, int j, int level, Grid<char>& mark)
+void Boggle::computerWordSearchHelper(string word, int i, int j, Grid<char>& mark)
 {
-    if ()
+    if (!dict.containsPrefix(word) || !board.inBounds(i, j) || mark[i][j] == 'x')
+        return;
+    else
+    {
+        mark[i][j] = 'x';
+        word += getLetter(i, j);
+        if (checkWord(word))
+        {
+            computerWordsFound.add(word);
+            computerScore += (word.size() - 3);
+        }
+        computerWordSearchHelper(word, i - 1, j - 1, mark);
+        computerWordSearchHelper(word, i - 1, j, mark);
+        computerWordSearchHelper(word, i - 1, j + 1, mark);
+        computerWordSearchHelper(word, i, j - 1, mark);
+        computerWordSearchHelper(word, i, j + 1, mark);
+        computerWordSearchHelper(word, i + 1, j - 1, mark);
+        computerWordSearchHelper(word, i + 1, j, mark);
+        computerWordSearchHelper(word, i + 1, j + 1, mark);
+        mark[i][j] = 'o';
+    }
 }
 
-int Boggle::getScoreComputer() {
-    // TODO: implement
-    return 0;   // remove this
+int Boggle::getScoreComputer()
+{
+    return computerScore;
 }
 
 Set<string> Boggle::getHumanWordsFound()
 {
     return humanWordsFound;
+}
+
+Set<string> Boggle::getComputerWordsFound()
+{
+    return computerWordsFound;
 }
 
 ostream& operator<<(ostream& out, Boggle& boggle)

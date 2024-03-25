@@ -19,19 +19,20 @@ class Boggle
         int getScoreHuman();
         int getScoreComputer();
         Set<string> getHumanWordsFound();
+        Set<string> getComputerWordsFound();
 
         friend ostream& operator<<(ostream& out, Boggle& boggle);
 
     private:
         Grid<char> board;
         Lexicon& dict;
-        Set<string> hunmanWordsFound;
+        Set<string> humanWordsFound;
         Set<string> computerWordsFound;
         int humanScore;
         int computerScore;
 
         bool humanWordSearchHelper(string word, int i, int j, int idx, Grid<char>& mark);
-        void computerWordSearchHelper(string word, int i, int j, int level, Grid<char>& mark);
+        void computerWordSearchHelper(string word, int i, int j, Grid<char>& mark);
 };
 
 #endif // _boggle_h

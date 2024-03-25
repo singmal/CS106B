@@ -50,7 +50,7 @@ void playOneGame(Lexicon& dictionary)
         boardPtr = new Boggle(dictionary, textOnBoard);
     }
 
-    // Task 2 & 3: human's turn except for search
+    // Task 2 & 3: human's turn
     cout << "It's your turn!" << endl;
     string input;
     Set<string> words;
@@ -68,17 +68,34 @@ void playOneGame(Lexicon& dictionary)
         {
             *it = toupper(*it);
         }
-        clearConsole();
         if (input.empty())
+        {
+            cout << endl;
             break;
-        else if (!boardPtr->checkWord(input))
-            cout << "You must enter an unfound 4+ letter word from dicitonary." << endl;
+        }
         else
         {
-            if (boardPtr->humanWordSearch(input))
-                cout << "You found a new word! \"" << input << "\"" << endl;
+            clearConsole();
+            if (!boardPtr->checkWord(input))
+                cout << "You must enter an unfound 4+ letter word from dicitonary." << endl;
             else
-                cout << "That word can't be formed on this board." << endl;
+            {
+                if (boardPtr->humanWordSearch(input))
+                    cout << "You found a new word! \"" << input << "\"" << endl;
+                else
+                    cout << "That word can't be formed on this board." << endl;
+            }
         }
     }
+
+    // Task 4: computer's turn except for search
+    cout << "It's my turn!" << endl;
+    words = boardPtr->computerWordSearch();
+    cout << "My words (" << words.size() << "): " << words << endl;
+    cout << "My score: " << boardPtr->getScoreComputer() << endl;
+
+    if (boardPtr->getScoreComputer() > boardPtr->getScoreHuman())
+        cout << "Ha ha ha, I destroyed you. Better luck next time, puny human!" << endl;
+    else
+        cout << "WOW, you defeated me! Congratulations!" << endl;
 }

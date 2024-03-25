@@ -54,7 +54,6 @@ int main()
             break;
         }
     }
-
     cout << "Have a nice day." << endl;
     BoggleGUI::shutdown();
     return 0;
