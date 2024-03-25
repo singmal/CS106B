@@ -45,6 +45,7 @@ int main()
     getLine("Press Enter to begin the game ... ");
 
     // play games repeatedly until user decides to quit
+    BoggleGUI::initialize(4, 4);
     while (true)
     {
         playOneGame(dictionary);   // your function
@@ -53,6 +54,7 @@ int main()
         {
             break;
         }
+        BoggleGUI::reset();
     }
     cout << "Have a nice day." << endl;
     BoggleGUI::shutdown();

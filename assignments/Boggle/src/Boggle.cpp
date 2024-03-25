@@ -1,6 +1,7 @@
 #include "Boggle.h"
 #include "shuffle.h"
 #include <cctype>
+#include "bogglegui.h"
 
 // letters on all 6 sides of every cube
 static string CUBES[16] = {
@@ -46,6 +47,13 @@ Boggle::Boggle(Lexicon& dictionary, string boardText) : dict(dictionary)
                 char ch = boardText[board.numCols() * i + j];
                 board[i][j] = toupper(ch);
             }
+        }
+    }
+    for (int i = 0; i < board.numRows(); i++)
+    {
+        for (int j = 0; j < board.numCols(); j++)
+        {
+            BoggleGUI::labelCube(i, j, board[i][j], false);
         }
     }
 }
@@ -97,26 +105,32 @@ bool Boggle::humanWordSearchHelper(string word, int i, int j, int idx, Grid<char
     {
         humanWordsFound.add(word);
         humanScore += (size - 3);
+        BoggleGUI::setScore(humanScore, BoggleGUI::HUMAN);
         return true;
     }
     string substr = word.substr(0, idx + 1);
-    if (board.inBounds(i, j) && word[idx] == board[i][j] && mark[i][j]!='x' && dict.containsPrefix(substr))
+    if (board.inBounds(i, j))
     {
-        mark[i][j] = 'x';
-        bool result = humanWordSearchHelper(word, i - 1, j - 1, idx + 1, mark) ||
-                        humanWordSearchHelper(word, i - 1, j, idx + 1, mark) ||
-                        humanWordSearchHelper(word, i - 1, j + 1, idx + 1, mark) ||
-                        humanWordSearchHelper(word, i, j - 1, idx + 1, mark) ||
-                        humanWordSearchHelper(word, i, j + 1, idx + 1, mark) ||
-                        humanWordSearchHelper(word, i + 1, j - 1, idx + 1, mark)||
-                        humanWordSearchHelper(word, i + 1, j, idx + 1, mark)||
-                        humanWordSearchHelper(word, i + 1, j + 1, idx + 1, mark);
-        mark[i][j] = 'o';
-        return result;
+        BoggleGUI::setHighlighted(i, j, true);
+        BoggleGUI::setAnimationDelay(100);
+        if (word[idx] == board[i][j] && mark[i][j]!='x' && dict.containsPrefix(substr))
+        {
+            mark[i][j] = 'x';
+            bool result = humanWordSearchHelper(word, i - 1, j - 1, idx + 1, mark) ||
+                            humanWordSearchHelper(word, i - 1, j, idx + 1, mark) ||
+                            humanWordSearchHelper(word, i - 1, j + 1, idx + 1, mark) ||
+                            humanWordSearchHelper(word, i, j - 1, idx + 1, mark) ||
+                            humanWordSearchHelper(word, i, j + 1, idx + 1, mark) ||
+                            humanWordSearchHelper(word, i + 1, j - 1, idx + 1, mark)||
+                            humanWordSearchHelper(word, i + 1, j, idx + 1, mark)||
+                            humanWordSearchHelper(word, i + 1, j + 1, idx + 1, mark);
+            mark[i][j] = 'o';
+            return result;
+        }
+        if (mark[i][j]!='x')
+            BoggleGUI::setHighlighted(i, j, false);
     }
-    else
-        return false;
-
+    return false;
 }
 
 int Boggle::getScoreHuman()
@@ -151,6 +165,7 @@ void Boggle::computerWordSearchHelper(string word, int i, int j, Grid<char>& mar
         {
             computerWordsFound.add(word);
             computerScore += (word.size() - 3);
+            BoggleGUI::setScore(computerScore, BoggleGUI::COMPUTER);
         }
         computerWordSearchHelper(word, i - 1, j - 1, mark);
         computerWordSearchHelper(word, i - 1, j, mark);

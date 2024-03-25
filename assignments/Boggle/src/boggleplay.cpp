@@ -3,6 +3,7 @@
 #include <cctype>
 #include "Boggle.h"
 #include "console.h"
+#include "bogglegui.h"
 
 void playOneGame(Lexicon& dictionary)
 {
@@ -48,7 +49,7 @@ void playOneGame(Lexicon& dictionary)
             }
         }
         boardPtr = new Boggle(dictionary, textOnBoard);
-    }
+    }   
 
     // Task 2 & 3: human's turn
     cout << "It's your turn!" << endl;
@@ -76,14 +77,20 @@ void playOneGame(Lexicon& dictionary)
         else
         {
             clearConsole();
+            BoggleGUI::clearHighlighting();
             if (!boardPtr->checkWord(input))
                 cout << "You must enter an unfound 4+ letter word from dicitonary." << endl;
             else
             {
                 if (boardPtr->humanWordSearch(input))
+                {
                     cout << "You found a new word! \"" << input << "\"" << endl;
+                    BoggleGUI::recordWord(input, BoggleGUI::HUMAN);
+                }
                 else
+                {
                     cout << "That word can't be formed on this board." << endl;
+                }
             }
         }
     }
@@ -92,6 +99,10 @@ void playOneGame(Lexicon& dictionary)
     cout << "It's my turn!" << endl;
     words = boardPtr->computerWordSearch();
     cout << "My words (" << words.size() << "): " << words << endl;
+    for (string word: words)
+    {
+        BoggleGUI::recordWord(word, BoggleGUI::COMPUTER);
+    }
     cout << "My score: " << boardPtr->getScoreComputer() << endl;
 
     if (boardPtr->getScoreComputer() > boardPtr->getScoreHuman())
